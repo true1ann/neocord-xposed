@@ -126,7 +126,7 @@ class Main : IXposedHookLoadPackage {
 
                 val url = 
                     if (config.customLoadUrl.enabled) config.customLoadUrl.url 
-                    else "https://raw.githubusercontent.com/pyoncord/detta-builds/main/bunny.min.js"
+                    else "https://github.com/revenge-mod/Revenge/releases/latest/download/revenge.js"
 
                 Log.e("Bunny", "Fetching JS bundle from $url")
                 
