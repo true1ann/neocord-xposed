@@ -55,20 +55,23 @@ class Main : IXposedHookLoadPackage {
         return Json.encodeToString(obj)
     }
 
-    override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        val reactActivity = runCatching {
-            lpparam.classLoader.loadClass("com.discord.react_activities.ReactActivity")
-        }.getOrElse { return } // Package is not our the target app, return
+    override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) = with (param) {
+        // val reactActivity = runCatching {
+        //     lpparam.classLoader.loadClass("com.discord.react_activities.ReactActivity")
+        // }.getOrElse { return } // Package is not our the target app, return
 
-        XposedBridge.hookMethod(reactActivity.getDeclaredMethod("onCreate", Bundle::class.java), object : XC_MethodHook() {
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                init(lpparam, param.thisObject as Activity)
-            }
-        })
-    }
+        // XposedBridge.hookMethod(reactActivity.getDeclaredMethod("onCreate", Bundle::class.java), object : XC_MethodHook() {
+        //     override fun beforeHookedMethod(param: MethodHookParam) {
+        //         init(lpparam, param.thisObject as Activity)
+        //     }
+        // })
+    // }
 
-    fun init(param: XC_LoadPackage.LoadPackageParam, activity: Activity) = with (param) {
-        val catalystInstanceImpl = classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
+    // fun init(param: XC_LoadPackage.LoadPackageParam, activity: Activity) = with (param) {
+        // val catalystInstanceImpl = classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
+        val catalystInstanceImpl = runCatching {
+            classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
+        }.getOrElse { return@with }
 
         for (module in pyonModules) module.onInit(param)
 
@@ -152,9 +155,9 @@ class Main : IXposedHookLoadPackage {
                 if (e.response.status != HttpStatusCode.NotModified) throw e;
                 Log.e("Bunny", "Server reponded with status code 304 - no changes to file")
             } catch (e: Throwable) {
-                activity.runOnUiThread {
-                    Toast.makeText(activity.applicationContext, "Failed to fetch JS bundle, Bunny may not load!", Toast.LENGTH_SHORT).show()
-                }
+                // activity.runOnUiThread {
+                //     Toast.makeText(activity.applicationContext, "Failed to fetch JS bundle, Bunny may not load!", Toast.LENGTH_SHORT).show()
+                // }
 
                 Log.e("Bunny", "Failed to download bundle", e)
             }
