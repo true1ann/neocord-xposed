@@ -42,7 +42,7 @@ class Main : IXposedHookLoadPackage {
 
     fun buildLoaderJsonString(): String {
         val obj = buildJsonObject {
-            put("loaderName", "BunnyXposed")
+            put("loaderName", "RevengeXposed")
             put("loaderVersion", BuildConfig.VERSION_NAME)
 
             for (module in modules) {
