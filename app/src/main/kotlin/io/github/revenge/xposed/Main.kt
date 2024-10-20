@@ -1,8 +1,6 @@
-package io.github.pyoncord.xposed
+package io.github.revenge.xposed
 
-import android.app.Activity 
-import android.app.AndroidAppHelper
-import android.content.Context
+import android.app.Activity
 import android.content.res.AssetManager
 import android.content.res.Resources
 import android.util.Log
@@ -12,7 +10,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import io.github.pyoncord.xposed.BuildConfig
+import io.github.revenge.xposed.BuildConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -36,7 +34,7 @@ data class LoaderConfig(
 )
 
 class Main : IXposedHookLoadPackage {
-    private val pyonModules: Array<PyonModule> = arrayOf(
+    private val modules: Array<Module> = arrayOf(
         ThemeModule(),
         SysColorsModule(),
         FontsModule(),
@@ -47,7 +45,7 @@ class Main : IXposedHookLoadPackage {
             put("loaderName", "BunnyXposed")
             put("loaderVersion", BuildConfig.VERSION_NAME)
 
-            for (module in pyonModules) {
+            for (module in modules) {
                 module.buildJson(this)
             }
         }
@@ -56,24 +54,34 @@ class Main : IXposedHookLoadPackage {
     }
 
     override fun handleLoadPackage(param: XC_LoadPackage.LoadPackageParam) = with (param) {
-        // val reactActivity = runCatching {
-        //     lpparam.classLoader.loadClass("com.discord.react_activities.ReactActivity")
-        // }.getOrElse { return } // Package is not our the target app, return
+        val reactActivity = runCatching {
+            classLoader.loadClass("com.discord.react_activities.ReactActivity")
+        }.getOrElse { return@with } // Package is not our the target app, return
 
-        // XposedBridge.hookMethod(reactActivity.getDeclaredMethod("onCreate", Bundle::class.java), object : XC_MethodHook() {
-        //     override fun beforeHookedMethod(param: MethodHookParam) {
-        //         init(lpparam, param.thisObject as Activity)
-        //     }
-        // })
-    // }
+        var activity: Activity? = null;
+        val onActivityCreateCallback = mutableSetOf<(activity: Activity) -> Unit>()
 
-    // fun init(param: XC_LoadPackage.LoadPackageParam, activity: Activity) = with (param) {
-        // val catalystInstanceImpl = classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
-        val catalystInstanceImpl = runCatching {
-            classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
-        }.getOrElse { return@with }
+        XposedBridge.hookMethod(reactActivity.getDeclaredMethod("onCreate", Bundle::class.java), object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                activity = param.thisObject as Activity;
+                onActivityCreateCallback.forEach { cb -> cb(activity!!) }
+                onActivityCreateCallback.clear()
+            }
+        })
 
-        for (module in pyonModules) module.onInit(param)
+        init(param) { cb ->
+            if (activity != null) cb(activity!!)
+            else onActivityCreateCallback.add(cb)
+        }
+    }
+
+    private fun init(
+        param: XC_LoadPackage.LoadPackageParam,
+        onActivityCreate: ((activity: Activity) -> Unit) -> Unit
+    ) = with (param) {
+        val catalystInstanceImpl = classLoader.loadClass("com.facebook.react.bridge.CatalystInstanceImpl")
+
+        for (module in modules) module.onInit(param)
 
         val loadScriptFromAssets = catalystInstanceImpl.getDeclaredMethod(
             "loadScriptFromAssets",
@@ -124,14 +132,14 @@ class Main : IXposedHookLoadPackage {
                     install(HttpTimeout) {
                         requestTimeoutMillis = if (bundle.exists()) 3000 else 10000
                     }
-                    install(UserAgent) { agent = "BunnyXposed" }
+                    install(UserAgent) { agent = "RevengeXposed" }
                 }
 
                 val url = 
                     if (config.customLoadUrl.enabled) config.customLoadUrl.url 
-                    else "https://github.com/revenge-mod/Revenge/releases/latest/download/revenge.js"
+                    else "https://github.com/revenge-mod/revenge-bundle/releases/latest/download/revenge.min.js"
 
-                Log.e("Bunny", "Fetching JS bundle from $url")
+                Log.e("Revenge", "Fetching JS bundle from $url")
                 
                 val response: HttpResponse = client.get(url) {
                     headers { 
@@ -153,13 +161,19 @@ class Main : IXposedHookLoadPackage {
                 return@async
             } catch (e: RedirectResponseException) {
                 if (e.response.status != HttpStatusCode.NotModified) throw e;
-                Log.e("Bunny", "Server reponded with status code 304 - no changes to file")
+                Log.e("Revenge", "Server responded with status code 304 - no changes to file")
             } catch (e: Throwable) {
-                // activity.runOnUiThread {
-                //     Toast.makeText(activity.applicationContext, "Failed to fetch JS bundle, Bunny may not load!", Toast.LENGTH_SHORT).show()
-                // }
+                onActivityCreate { activity ->
+                    activity.runOnUiThread {
+                        Toast.makeText(
+                            activity.applicationContext,
+                            "Failed to fetch JS bundle, Revenge may not load!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
 
-                Log.e("Bunny", "Failed to download bundle", e)
+                Log.e("Revenge", "Failed to download bundle", e)
             }
         }
 

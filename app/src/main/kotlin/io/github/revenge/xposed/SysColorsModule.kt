@@ -1,4 +1,4 @@
-package io.github.pyoncord.xposed
+package io.github.revenge.xposed
 
 import android.app.AndroidAppHelper
 import android.content.Context
@@ -16,9 +16,9 @@ data class SysColors(
     val accent3: List<String>
 )
 
-class SysColorsModule : PyonModule() {
+class SysColorsModule : Module() {
     private lateinit var context: Context
-    fun isSupported() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    private fun isSupported() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     override fun buildJson(builder: JsonObjectBuilder) {
         context = AndroidAppHelper.currentApplication()
@@ -43,7 +43,7 @@ class SysColorsModule : PyonModule() {
         }
     }
 
-    fun convertToColor(id: Int): String {
+    private fun convertToColor(id: Int): String {
         val clr = if (isSupported()) ContextCompat.getColor(context, id) else 0
         return String.format("#%06X", 0xFFFFFF and clr)
     }
