@@ -1,7 +1,7 @@
 // credits to janisslsm from his PR: https://github.com/vendetta-mod/VendettaXposed/pull/17
 // hooks are modified function from RN codebase
 
-package io.github.revenge.xposed
+package true1ann.neocord.x.posed
 
 import android.content.res.AssetManager
 import android.os.Build
@@ -80,7 +80,7 @@ class FontsModule: Module() {
             if (!fileName.startsWith(".")) {
                 val fontName = fileName.split('.')[0]
                 if (fontDef.main.keys.none { it == fontName }) {
-                    Log.i("Revenge", "Deleting font file: $fileName")
+                    Log.i("NC", "Deleting font file: $fileName")
                     file.delete()
                 }
             }
@@ -92,12 +92,12 @@ class FontsModule: Module() {
                 async {
                     val url = fontDef.main.getValue(name)
                     try {
-                        Log.i("Revenge", "Downloading $name from $url")
+                        Log.i("NC", "Downloading $name from $url")
                         val file = File(fontsDir, "$name${FILE_EXTENSIONS.first { url.endsWith(it) }}")
                         if (file.exists()) return@async
 
                         val client = HttpClient(CIO) {
-                            install(UserAgent) { agent = "RevengeXposed" }
+                            install(UserAgent) { agent = "NCXposed" }
                         }
 
                         val response: HttpResponse = client.get(url)
@@ -108,7 +108,7 @@ class FontsModule: Module() {
 
                         return@async
                     } catch (e: Throwable) {
-                        Log.e("Revenge", "Failed to download fonts ($name from $url)", e)
+                        Log.e("NC", "Failed to download fonts ($name from $url)", e)
                     }
                 }
             }.awaitAll()

@@ -1,4 +1,4 @@
-package io.github.revenge.xposed
+package true1ann.neocord.x.posed
 
 import android.content.Context
 import android.graphics.Color

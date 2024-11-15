@@ -1,4 +1,4 @@
-package io.github.revenge.xposed
+package true1ann.neocord.x.posed
 
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import kotlinx.serialization.json.JsonObjectBuilder

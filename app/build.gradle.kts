@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.revenge.xposed"
+    namespace = "true1ann.neocord.x.posed"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "io.github.revenge.xposed"
+        applicationId = "true1ann.neocord.x.posed"
         minSdk = 24
         targetSdk = 33
         versionCode = 1101

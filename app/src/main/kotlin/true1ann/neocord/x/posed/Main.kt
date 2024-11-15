@@ -1,4 +1,4 @@
-package io.github.revenge.xposed
+package true1ann.neocord.x.posed
 
 import android.app.Activity
 import android.content.res.AssetManager
@@ -10,7 +10,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import io.github.revenge.xposed.BuildConfig
+import true1ann.neocord.x.posed.BuildConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -42,7 +42,7 @@ class Main : IXposedHookLoadPackage {
 
     fun buildLoaderJsonString(): String {
         val obj = buildJsonObject {
-            put("loaderName", "RevengeXposed")
+            put("loaderName", "NCXposed")
             put("loaderVersion", BuildConfig.VERSION_NAME)
 
             for (module in modules) {
@@ -132,14 +132,14 @@ class Main : IXposedHookLoadPackage {
                     install(HttpTimeout) {
                         requestTimeoutMillis = if (bundle.exists()) 5000 else 10000
                     }
-                    install(UserAgent) { agent = "RevengeXposed" }
+                    install(UserAgent) { agent = "NCXposed" }
                 }
 
                 val url = 
                     if (config.customLoadUrl.enabled) config.customLoadUrl.url 
                     else "https://github.com/revenge-mod/revenge-bundle/releases/latest/download/revenge.min.js"
 
-                Log.e("Revenge", "Fetching JS bundle from $url")
+                Log.e("NC", "Fetching JS bundle from $url")
                 
                 val response: HttpResponse = client.get(url) {
                     headers { 
@@ -161,19 +161,19 @@ class Main : IXposedHookLoadPackage {
                 return@async
             } catch (e: RedirectResponseException) {
                 if (e.response.status != HttpStatusCode.NotModified) throw e;
-                Log.e("Revenge", "Server responded with status code 304 - no changes to file")
+                Log.e("NC", "Server responded with status code 304 - no changes to file")
             } catch (e: Throwable) {
                 onActivityCreate { activity ->
                     activity.runOnUiThread {
                         Toast.makeText(
                             activity.applicationContext,
-                            "Failed to fetch JS bundle, Revenge may not load!",
+                            "Failed to fetch JS bundle, NeoCord may not load!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
 
-                Log.e("Revenge", "Failed to download bundle", e)
+                Log.e("NC", "Failed to download bundle", e)
             }
         }
 

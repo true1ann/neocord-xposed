@@ -1,4 +1,4 @@
-package io.github.revenge.xposed
+package true1ann.neocord.x.posed
 
 import android.app.AndroidAppHelper
 import android.content.Context
