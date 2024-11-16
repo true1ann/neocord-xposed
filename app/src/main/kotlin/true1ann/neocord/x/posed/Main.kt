@@ -137,7 +137,7 @@ class Main : IXposedHookLoadPackage {
 
                 val url = 
                     if (config.customLoadUrl.enabled) config.customLoadUrl.url 
-                    else "https://github.com/revenge-mod/revenge-bundle/releases/latest/download/revenge.min.js"
+                    else "https://github.com/true1ann/neocord-bundle/releases/latest/download/neocord.min.js"
 
                 Log.e("NC", "Fetching JS bundle from $url")
                 
@@ -161,7 +161,7 @@ class Main : IXposedHookLoadPackage {
                 return@async
             } catch (e: RedirectResponseException) {
                 if (e.response.status != HttpStatusCode.NotModified) throw e;
-                Log.e("NC", "Server responded with status code 304 - no changes to file")
+                Log.e("NC", "Server responded with status code 304 - Not modified")
             } catch (e: Throwable) {
                 onActivityCreate { activity ->
                     activity.runOnUiThread {

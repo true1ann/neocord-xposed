@@ -1,0 +1,50 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/app/src/main/kotlin/true1ann/neocord/x/posed/Main.kt",
+      "selection": {
+        "end": {
+          "column": 39,
+          "index": 1231,
+          "line": 44
+        },
+        "start": {
+          "column": 39,
+          "index": 1231,
+          "line": 44
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/app/src/main/AndroidManifest.xml",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/app/build.gradle.kts",
+      "selection": {
+        "end": {
+          "column": 26,
+          "index": 379,
+          "line": 15
+        },
+        "start": {
+          "column": 26,
+          "index": 379,
+          "line": 15
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/app/build.gradle.kts"
+}
