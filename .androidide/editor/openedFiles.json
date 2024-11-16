@@ -44,7 +44,22 @@
           "line": 15
         }
       }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/.gitignore",
+      "selection": {
+        "end": {
+          "column": 11,
+          "index": 235,
+          "line": 15
+        },
+        "start": {
+          "column": 11,
+          "index": 235,
+          "line": 15
+        }
+      }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/app/build.gradle.kts"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/neocord-xposed/.gitignore"
 }
